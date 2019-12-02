@@ -17,7 +17,7 @@ class ILauncher:
         self.mutationRate = 0.05
         self.testD = 0.
 
-        
+
     def status(self):
         for i in range(self.pLauncher.PRocketNum):
             if self.distance[i] < 20 :
@@ -82,8 +82,6 @@ class ILauncher:
                 
         return [a0,k0]#,a1,k1]
     
-    def radarChooseTarget(self):
-        print("HI")
             
     def interception(self,input):
         decision = self.brain.output(input)      
@@ -116,7 +114,6 @@ class ILauncher:
         self.brain.mutate(self.mutationRate)
         
     def calcFitness(self):
-    ## Don't forget how the natural selection works
     ## option 1
         #self.fitness = self.score*self.score
 
