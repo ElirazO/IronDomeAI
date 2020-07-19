@@ -1,15 +1,16 @@
+from p5 import *
 from IRocket import IRocket
 from PLauncher import PLauncher
 from NeuralNet import NeuralNet
 
 class ILauncher:
-    def __init__(self,width,height):
-        self.pos = PVector(width/2,height)
-        self.size = PVector(50,30)
+    def __init__(self):
+        self.pos = Vector(width/2, height)
+        self.size = Vector(50,30)
         self.iRocket = IRocket(self.pos.x+6,self.pos.y-22)
-        self.pLauncher = PLauncher(width,height)
+        self.pLauncher = PLauncher()
         self.distance = [0.]*self.pLauncher.PRocketNum
-        self.brain = NeuralNet(2*self.pLauncher.PRocketNum,6,3,1)
+        #self.brain = NeuralNet(2*self.pLauncher.PRocketNum,6,3,1)
         self.dead = False
         self.lifetime = 0.
         self.score = 0
@@ -37,7 +38,7 @@ class ILauncher:
             self.dead = True 
         
         if self.pLauncher.miss : 
-            self.pLauncher = PLauncher(width,height)
+            self.pLauncher = PLauncher()
             self.distance = [0.]*self.pLauncher.PRocketNum
             self.testD = 0.
 
@@ -48,15 +49,15 @@ class ILauncher:
         
         self.pLauncher.move()
         self.iRocket.move()
-        self.lifetime += 1 
+        #self.lifetime += 1 
 
         
     def show(self):
         if self.dead :
             return 
-        
-        self.pLauncher.show()
+            
         self.iRocket.show()
+        self.pLauncher.show()
 
     
     def radarDetections(self):
@@ -65,11 +66,14 @@ class ILauncher:
             return a
         
         for i in range(self.pLauncher.PRocketNum):
-            self.distance[i] = dist(self.iRocket.pos.x,self.iRocket.pos.y,self.pLauncher.pRockets[i].pos.x,self.pLauncher.pRockets[i].pos.y)
+            point1 = (self.iRocket.pos.x,self.iRocket.pos.y,0)
+            point2 = (self.pLauncher.pRockets[i].pos.x,self.pLauncher.pRockets[i].pos.y,0)
+            self.distance[i] = dist(point1,point2)
         
         a0 = 15/self.distance[0]
         d0 = (self.iRocket.pos).copy()
-        d0.sub(self.pLauncher.pRockets[0].pos)
+        #d0.sub(self.pLauncher.pRockets[0].pos)
+        d0 = d0 - self.pLauncher.pRockets[0].pos
         k0 = (HALF_PI+atan2(d0.y,d0.x)-self.iRocket.angle)/(TWO_PI)
         
         #a1 = 15/self.distance[1]
@@ -101,12 +105,12 @@ class ILauncher:
             
             
     def clone(self):
-        clone = ILauncher(width,height)
+        clone = ILauncher()
         clone.brain = self.brain.clone()
         return clone
     
     def crossover(self,parent):
-        child = ILauncher(width,height)
+        child = ILauncher()
         child.brain = self.brain.crossover(parent.brain)
         return child
 

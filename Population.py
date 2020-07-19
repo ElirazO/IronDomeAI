@@ -1,9 +1,10 @@
+from p5 import *
 from ILauncher import ILauncher
 
 class Population:
-    def __init__(self,width,height,size):
+    def __init__(self,size):
         self.size = size
-        self.iLaunchers = [ILauncher(width,height) for i in range(self.size)]
+        self.iLaunchers = [ILauncher() for i in range(self.size)]
         self.bestILauncher = None
         self.bestILauncherIndex = 0
         self.bestILauncherScore = 0
@@ -17,7 +18,6 @@ class Population:
         for i in range(len(self.iLaunchers)):
             if not(self.iLaunchers[i].dead) :
                 return False
-        
         return True
 
     def update(self):
@@ -27,8 +27,7 @@ class Population:
                 self.iLaunchers[i].interception(a)
                 self.iLaunchers[i].status()
                 self.iLaunchers[i].move()
-                
-                
+                  
     def show(self):
         self.iLaunchers[self.showILauncher].show()
         
@@ -61,7 +60,7 @@ class Population:
             self.bestILauncher = self.bestILauncher.clone()
         
     def selectParant(self):
-        rand = random(self.fitnessSum)
+        rand = random_uniform(self.fitnessSum)
         summation = 0
         for i in range(len(self.iLaunchers)):
             summation += self.iLaunchers[i].fitness
@@ -71,7 +70,7 @@ class Population:
         return self.iLaunchers[0]
         
     def naturalSelection(self):
-        newILaunchers = [ILauncher(width/2,height) for i in range(self.size)]
+        newILaunchers = [ILauncher() for i in range(self.size)]
         self.setBestILauncher()
         self.calcFitnessSum()
         

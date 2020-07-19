@@ -1,48 +1,45 @@
-class PRocket:
-    Gravity = 0.03
-    def __init__(self,x,y):
-        self.size = PVector(3,25)
-        self.pos  = PVector(x,y)
-        self.angle = radians(-random(10,40))
-        self.vel = random(4,6)
-        self.Xvel = self.vel*sin(self.angle)
-        self.Yvel = -self.vel*cos(self.angle)
-        self.miss  = False
-        self.hit   = False
-        
-        
-    def status(self):
-        #if self.pos.x < -50 or self.pos.y < -20 or self.pos.y > height+20:
-        if not(-20 < self.pos.x) or not(-20 < self.pos.y) :
-            self.miss = True
-        
-        ## hit the city
-        #if (self.pos.y > height) and (-50 < self.pos.x) and (self.pos.x < 220):
-        if self.pos.y > height + 20:
-            self.hit = True
+from p5 import *
 
+class PRocket:
+    size = Vector(3,25)
+    Gravity = 0.03
+    miss = False
+    hit  = False
+    angle = radians(-random_uniform(40,10))
+    vel = random_uniform(4,6)
+    Xvel =  vel*sin(angle)
+    Yvel = -vel*cos(angle)
+
+    def __init__(self,x,y):
+        self.pos  = Vector(x,y)
+               
+    def status(self):
+        if -20 > self.pos.x or -20 > self.pos.y :
+            PRocket.miss = True
+        
+        if self.pos.y > height + 20:
+            PRocket.hit = True
                 
     def move(self):
-        if self.miss or self.hit:
-            self.pos = PVector(-1000,-1000)       
+        if PRocket.miss or PRocket.hit:
+            self.pos = Vector(-100,-100)       
         else:
-            self.pos.x += self.Xvel
-            self.pos.y += self.Yvel
-            self.Yvel  += PRocket.Gravity
-            self.angle  = atan(-self.Xvel/self.Yvel)
+            self.pos.x += PRocket.Xvel
+            self.pos.y += PRocket.Yvel
+            PRocket.Yvel += PRocket.Gravity
+            PRocket.angle = atan(-PRocket.Xvel/PRocket.Yvel)
         
     def show(self):
-        if self.miss or self.hit :
+        if PRocket.miss or PRocket.hit :
             pass
-        else:
-            pushMatrix()
-            translate(self.pos.x,self.pos.y)
-            rotate(self.angle)
-            c = color(0,0,100)
-            fill(0,230,0)
-            noStroke()
-            rect(-(self.size.x/2),-(self.size.y/2),self.size.x,self.size.y)
-            stroke(0)
-            popMatrix()
+        else: 
+            with push_matrix():
+                translate(self.pos.x, self.pos.y)
+                rotate(PRocket.angle)
+                fill(0,230,0)
+                no_stroke()
+                rect((-PRocket.size.x/2,-PRocket.size.y/2),PRocket.size.x,PRocket.size.y)
+                stroke(0)
+            
     
-    
+   

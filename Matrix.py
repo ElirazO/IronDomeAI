@@ -1,3 +1,5 @@
+from p5 import *
+
 class Matrix:
     ## first constructor
     def __init__(self,r,c):
@@ -36,7 +38,7 @@ class Matrix:
     def randomize(self):
         for i in range(self.rows):
             for j in range(self.cols):
-                self.matrix[i][j] = random(-1,1)
+                self.matrix[i][j] = random_uniform(-1,1)
     
     def matrixToVector(self):
         arr = []
@@ -66,9 +68,9 @@ class Matrix:
     def mutate(self,mutationRate):
         for i in range(self.rows) :
             for j in range(self.cols) :
-                rand = random(1)
+                rand = random_uniform(1)
                 if rand < mutationRate :
-                    self.matrix[i][j] += randomGaussian()/5
+                    self.matrix[i][j] += random_gaussian()/5
                     
                     if self.matrix[i][j] > 1 :
                         self.matrix[i][j] = 1
@@ -78,8 +80,8 @@ class Matrix:
     def crossover(self,partner):
         child = Matrix(self.rows,self.cols)
         
-        randR = floor(random(self.rows))
-        randC = floor(random(self.cols))
+        randR = floor(random_uniform(self.rows))
+        randC = floor(random_uniform(self.cols))
         
         for i in range(self.rows):
             for j in range(self.cols):
