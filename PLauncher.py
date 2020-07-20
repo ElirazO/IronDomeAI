@@ -2,18 +2,16 @@ from p5 import *
 from PRocket import PRocket
 
 class PLauncher:
-    miss = False
-    hit = False
-
     def __init__(self):
-        self.size = Vector(50,50)
         self.randPosX = random_uniform(150,80) 
         self.pos = Vector(width - self.randPosX, height)
         self.PRocketNum = 1 # int(random(1,3))
         self.pRockets = [PRocket(self.pos.x,self.pos.y) for i in range(self.PRocketNum)]
         #self.refTime = millis()
         #self.timeConst = 1000
-        
+        self.miss = False
+        self.hit = False
+
     def status(self):
         allMiss = True
         for i in range(self.PRocketNum) :
@@ -21,13 +19,13 @@ class PLauncher:
             allMiss = allMiss and self.pRockets[i].miss
 
             if self.pRockets[i].hit : 
-                PLauncher.hit = True
+                self.hit = True
             
         if allMiss : 
-            PLauncher.miss = True    
+            self.miss = True    
         
     def move(self):
-        if PLauncher.miss :
+        if self.miss :
             return
                     
         #for i in range(self.PRocketNum) :
@@ -39,7 +37,7 @@ class PLauncher:
 
             
     def show(self):
-        if PLauncher.miss :
+        if self.miss :
             return
 
         for i in range(self.PRocketNum) :

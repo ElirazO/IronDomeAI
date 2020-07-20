@@ -3,39 +3,39 @@ from p5 import *
 class PRocket:
     size = Vector(3,25)
     Gravity = 0.03
-    miss = False
-    hit  = False
-    angle = radians(-random_uniform(40,10))
-    vel = random_uniform(4,6)
-    Xvel =  vel*sin(angle)
-    Yvel = -vel*cos(angle)
 
     def __init__(self,x,y):
         self.pos  = Vector(x,y)
+        self.vel = random_uniform(4,6)
+        self.angle = radians(-random_uniform(40,10))
+        self.Xvel =  self.vel*sin(self.angle)
+        self.Yvel = -self.vel*cos(self.angle)
+        self.hit  = False
+        self.miss = False
                
     def status(self):
         if -20 > self.pos.x or -20 > self.pos.y :
-            PRocket.miss = True
+            self.miss = True
         
         if self.pos.y > height + 20:
-            PRocket.hit = True
+            self.hit = True
                 
     def move(self):
-        if PRocket.miss or PRocket.hit:
+        if self.miss or self.hit:
             self.pos = Vector(-100,-100)       
         else:
-            self.pos.x += PRocket.Xvel
-            self.pos.y += PRocket.Yvel
-            PRocket.Yvel += PRocket.Gravity
-            PRocket.angle = atan(-PRocket.Xvel/PRocket.Yvel)
+            self.pos.x += self.Xvel
+            self.pos.y += self.Yvel
+            self.Yvel += PRocket.Gravity
+            self.angle = atan(-self.Xvel/self.Yvel)
         
     def show(self):
-        if PRocket.miss or PRocket.hit :
+        if self.miss or self.hit :
             pass
         else: 
             with push_matrix():
                 translate(self.pos.x, self.pos.y)
-                rotate(PRocket.angle)
+                rotate(self.angle)
                 fill(0,230,0)
                 no_stroke()
                 rect((-PRocket.size.x/2,-PRocket.size.y/2),PRocket.size.x,PRocket.size.y)

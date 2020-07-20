@@ -6,7 +6,6 @@ from NeuralNet import NeuralNet
 class ILauncher:
     def __init__(self):
         self.pos = Vector(width/2, height)
-        self.size = Vector(50,30)
         self.iRocket = IRocket(self.pos.x+6,self.pos.y-22)
         self.pLauncher = PLauncher()
         self.distance = [0.]*self.pLauncher.PRocketNum
@@ -17,7 +16,6 @@ class ILauncher:
         self.fitness = 0.
         self.mutationRate = 0.05
         self.testD = 0.
-
 
     def status(self):
         for i in range(self.pLauncher.PRocketNum):
