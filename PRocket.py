@@ -1,7 +1,7 @@
 from p5 import *
 
 class PRocket:
-    size = Vector(3,25)
+    dim = Vector(3,25)
     Gravity = 0.03
 
     def __init__(self,x,y):
@@ -38,7 +38,7 @@ class PRocket:
                 rotate(self.angle)
                 fill(0,230,0)
                 no_stroke()
-                rect((-PRocket.size.x/2,-PRocket.size.y/2),PRocket.size.x,PRocket.size.y)
+                rect((-PRocket.dim.x/2,-PRocket.dim.y/2),PRocket.dim.x,PRocket.dim.y)
                 stroke(0)
             
     

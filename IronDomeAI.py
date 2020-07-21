@@ -4,7 +4,7 @@ from Population import Population
 
 #global width, height
 keyArray = [False]*4
-humanPlaying = True
+humanPlaying = False
 drawOnly = False
 #frame_rate = 60 
 #img0Mask = None
@@ -52,12 +52,12 @@ def draw():
         
         fill(255)
         text("AI IRON DOME",(450,45))
-        text("BEST LAUNCHER : "+str(pop.bestILauncherIndex),width-200,65)
-        text("BEST SCORE : "+str(pop.bestILauncherScore),width-200,85)
-        text("BEST FITNESS : "+str(floor(pop.bestFitness)),width-200,105)
-        text("GEN : "+str(pop.gen),width-200,125)
-        text("SHOW LAUNCHER : "+str(pop.showILauncher),50,65)
-        text("SCORE : "+str(pop.iLaunchers[pop.showILauncher].score),50,85)
+        text("BEST LAUNCHER : "+str(pop.bestILauncherIndex),(width-200,65))
+        text("BEST SCORE : "+str(pop.bestILauncherScore),(width-200,85))
+        text("BEST FITNESS : "+str(floor(pop.bestFitness)),(width-200,105))
+        text("GEN : "+str(pop.gen),(width-200,125))
+        text("SHOW LAUNCHER : "+str(pop.showILauncher),(50,65))
+        text("SCORE : "+str(pop.iLaunchers[pop.showILauncher].score),(50,85))
     
     else:
         #text_font(f, 36)

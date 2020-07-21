@@ -9,7 +9,7 @@ class ILauncher:
         self.iRocket = IRocket(self.pos.x+6,self.pos.y-22)
         self.pLauncher = PLauncher()
         self.distance = [0.]*self.pLauncher.PRocketNum
-        #self.brain = NeuralNet(2*self.pLauncher.PRocketNum,6,3,1)
+        self.brain = NeuralNet(2*self.pLauncher.PRocketNum,6,3,1)
         self.dead = False
         self.lifetime = 0.
         self.score = 0

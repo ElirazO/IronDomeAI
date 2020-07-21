@@ -2,7 +2,7 @@ from p5 import *
 
 class IRocket:
     Acceleration = 0.1
-    size = Vector(2,30)
+    dim = Vector(2,30)
     maxVel = 15
 
     def __init__(self,x,y):
@@ -32,7 +32,7 @@ class IRocket:
             rotate(self.angle)
             fill(51,192,239)
             no_stroke()
-            rect((-IRocket.size.x/2,-IRocket.size.y/2),IRocket.size.x,IRocket.size.y)
+            rect((-IRocket.dim.x/2,-IRocket.dim.y/2),IRocket.dim.x,IRocket.dim.y)
             stroke(0)
         
     def accelerate(self):

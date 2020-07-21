@@ -1,5 +1,6 @@
 from Matrix import Matrix
 
+
 class NeuralNet:
     def __init__(self, input, hidden, output, hiddenLayers):
         self.iNodes = input

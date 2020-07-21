@@ -1,5 +1,7 @@
+import os
 from p5 import *
 from ILauncher import ILauncher
+from multiprocessing import Process, current_process
 
 class Population:
     def __init__(self,size):
@@ -20,14 +22,22 @@ class Population:
                 return False
         return True
 
+    def updateLuncher(self, index):
+        if not(self.iLaunchers[index].dead) :
+            #print("process ID: "+str(os.getpid()))
+            a = self.iLaunchers[index].radarDetections()
+            self.iLaunchers[index].interception(a)
+            self.iLaunchers[index].status()
+            self.iLaunchers[index].move()
+    
     def update(self):
+        #processes = []
         for i in range(len(self.iLaunchers)):
-            if not(self.iLaunchers[i].dead) :
-                a = self.iLaunchers[i].radarDetections()
-                self.iLaunchers[i].interception(a)
-                self.iLaunchers[i].status()
-                self.iLaunchers[i].move()
-                  
+            self.updateLuncher(i)
+            #process = Process(target=self.updateLuncher, args=(i,))
+            #processes.append(process)
+            #process.start()
+
     def show(self):
         self.iLaunchers[self.showILauncher].show()
         
