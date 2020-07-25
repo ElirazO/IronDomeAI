@@ -3,13 +3,22 @@ from IRocket import IRocket
 from PLauncher import PLauncher
 from NeuralNet import NeuralNet
 
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+import math
+
 class ILauncher:
     def __init__(self):
         self.pos = Vector(width/2, height)
         self.iRocket = IRocket(self.pos.x+6,self.pos.y-22)
         self.pLauncher = PLauncher()
         self.distance = [0.]*self.pLauncher.PRocketNum
-        self.brain = NeuralNet(2*self.pLauncher.PRocketNum,6,3,1)
+        #self.brain = NeuralNet(2*self.pLauncher.PRocketNum,6,3,1)
+        self.brain_tf = keras.Sequential([  layers.Dense(2, activation="relu", name="layer1"),
+                                            layers.Dense(3, activation="relu", name="layer2"),
+                                            layers.Dense(4, name="layer3"),
+                                        ])
         self.dead = False
         self.lifetime = 0.
         self.score = 0
@@ -86,14 +95,17 @@ class ILauncher:
     
             
     def interception(self,input):
-        decision = self.brain.output(input)      
-        max = 0
-        maxIndex = 0
-        for i in range(len(decision)):
-            if decision[i] > max :
-                max = decision[i]
-                maxIndex = i
+        decision = self.brain_tf(tf.convert_to_tensor([input], dtype=tf.float32))
+        maxIndex = tf.math.argmax(decision,1).numpy()[0]
         
+        #decision = self.brain.output(input)   
+        #max = decision[0]
+        #maxIndex = 0
+        #for i in range(len(decision)):
+        #    if decision[i] > max :
+        #        max = decision[i]
+        #        maxIndex = i
+                
         if maxIndex == 0 :
             self.iRocket.accelerate()
         if maxIndex == 1 :
@@ -104,16 +116,34 @@ class ILauncher:
             
     def clone(self):
         clone = ILauncher()
-        clone.brain = self.brain.clone()
+        #clone.brain = self.brain.clone()
+        inputList = [0.]*2*self.pLauncher.PRocketNum
+        clone.brain_tf(tf.convert_to_tensor([inputList]))
+        clone.brain_tf.set_weights(self.brain_tf.get_weights()) 
         return clone
     
     def crossover(self,parent):
         child = ILauncher()
-        child.brain = self.brain.crossover(parent.brain)
+        #child.brain = self.brain.crossover(parent.brain)
+        inputList = [0.]*2*self.pLauncher.PRocketNum
+        child.brain_tf(tf.convert_to_tensor([inputList]))
+        child.brain_tf.set_weights(self.brain_tf.get_weights())
         return child
 
     def mutate(self):
-        self.brain.mutate(self.mutationRate)
+        list_of_weights = self.brain_tf.get_weights()
+        noise = [np.random.normal(scale=0.2,size=arr.shape) for arr in list_of_weights]
+        self.brain_tf.set_weights(np.add(self.brain_tf.get_weights(),noise))
+        
+        list_of_new_weights = []
+        for element in self.brain_tf.get_weights():
+            element[element>1] = 1
+            element[element<-1] = -1
+            list_of_new_weights.append(element)
+        
+        self.brain_tf.set_weights(list_of_new_weights)
+
+        #self.brain.mutate(self.mutationRate)
         
     def calcFitness(self):
     ## option 1

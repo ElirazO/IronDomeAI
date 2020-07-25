@@ -34,7 +34,7 @@ def setup():
     #f = create_font("Arial.tiff", 16)
 
     if not(humanPlaying):
-        pop = Population(80)
+        pop = Population(20)
     else:
         Launcher = ILauncher()
     

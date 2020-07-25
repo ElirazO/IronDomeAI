@@ -6,6 +6,9 @@ class Matrix:
         self.rows = r
         self.cols = c
         self.matrix = [[0.] * self.cols for i in range(self.rows)]
+
+    def returnMatrix(self):
+        return self.matrix
     
     ## second constructor
     @classmethod
