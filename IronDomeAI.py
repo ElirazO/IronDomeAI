@@ -34,7 +34,7 @@ def setup():
     #f = create_font("Arial.tiff", 16)
 
     if not(humanPlaying):
-        pop = Population(20)
+        pop = Population(50)
     else:
         Launcher = ILauncher()
     
@@ -48,7 +48,7 @@ def draw():
             pop.naturalSelection()
         else:
             pop.update()
-            pop.show()
+            pop.display()
         
         fill(255)
         text("AI IRON DOME",(450,45))

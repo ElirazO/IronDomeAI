@@ -7,17 +7,22 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 import math
+import inspect
+import numpy as np
 
 class ILauncher:
+    next_id = 0
     def __init__(self):
+        self.id = ILauncher.next_id
+        ILauncher.next_id += 1
         self.pos = Vector(width/2, height)
         self.iRocket = IRocket(self.pos.x+6,self.pos.y-22)
         self.pLauncher = PLauncher()
         self.distance = [0.]*self.pLauncher.PRocketNum
         #self.brain = NeuralNet(2*self.pLauncher.PRocketNum,6,3,1)
         self.brain_tf = keras.Sequential([  layers.Dense(2, activation="relu", name="layer1"),
-                                            layers.Dense(3, activation="relu", name="layer2"),
-                                            layers.Dense(4, name="layer3"),
+                                            layers.Dense(6, activation="relu", name="layer2"),
+                                            layers.Dense(3, name="layer3"),
                                         ])
         self.dead = False
         self.lifetime = 0.
@@ -25,6 +30,7 @@ class ILauncher:
         self.fitness = 0.
         self.mutationRate = 0.05
         self.testD = 0.
+        print("Generates ILauncher, ID: "+str(self.id))
 
     def status(self):
         for i in range(self.pLauncher.PRocketNum):
@@ -49,6 +55,9 @@ class ILauncher:
             self.distance = [0.]*self.pLauncher.PRocketNum
             self.testD = 0.
 
+        if self.dead:
+            print("ILauncher, ID: "+str(self.id)+", is dead. Score: "+str(self.score))
+
     
     def move(self):
         if self.dead :
@@ -59,12 +68,12 @@ class ILauncher:
         #self.lifetime += 1 
 
         
-    def show(self):
+    def display(self):
         if self.dead :
             return 
             
-        self.iRocket.show()
-        self.pLauncher.show()
+        self.iRocket.display()
+        self.pLauncher.display()
 
     
     def radarDetections(self):
@@ -122,17 +131,28 @@ class ILauncher:
         clone.brain_tf.set_weights(self.brain_tf.get_weights()) 
         return clone
     
-    def crossover(self,parent):
+    def crossover(self,partner):
         child = ILauncher()
-        #child.brain = self.brain.crossover(parent.brain)
         inputList = [0.]*2*self.pLauncher.PRocketNum
         child.brain_tf(tf.convert_to_tensor([inputList]))
-        child.brain_tf.set_weights(self.brain_tf.get_weights())
+        #child.brain_tf.set_weights(self.brain_tf.get_weights())
+        
+        self_weights = self.brain_tf.get_weights()
+        partner_weights = partner.brain_tf.get_weights()
+
+        for i,layer in enumerate(self_weights):
+            for j in range(len(layer)):
+                rand = np.random.random()
+                if rand > 0.5 :
+                    self_weights[i][j] = partner_weights[i][j]
+        
+        child.brain_tf.set_weights(self_weights)
+            
         return child
 
-    def mutate(self):
+    def mutate(self,randScale): #scale=0.075
         list_of_weights = self.brain_tf.get_weights()
-        noise = [np.random.normal(scale=0.2,size=arr.shape) for arr in list_of_weights]
+        noise = [np.random.normal(scale=randScale,size=arr.shape) for arr in list_of_weights]
         self.brain_tf.set_weights(np.add(self.brain_tf.get_weights(),noise))
         
         list_of_new_weights = []
@@ -147,12 +167,12 @@ class ILauncher:
         
     def calcFitness(self):
     ## option 1
-        #self.fitness = self.score*self.score
+        self.fitness = self.score*self.score
 
     ## option 2
-        self.fitness = 1
-        self.fitness *= (1+self.score)
-        self.fitness *= pow(2,self.score)
+        #self.fitness = 1
+        #self.fitness *= (1+self.score)
+        #self.fitness *= pow(2,self.score)
 
     ## option 3
         #self.fitness = self.score * self.score

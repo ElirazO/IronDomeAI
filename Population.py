@@ -1,6 +1,8 @@
 import os
 from p5 import *
 from ILauncher import ILauncher
+import time
+import random
 
 class Population:
     def __init__(self,size):
@@ -13,7 +15,7 @@ class Population:
         self.fitnessSum = 0.
         self.gen = 0
         self.showILauncher = 0
-        self.time = millis()+7000
+        self.time = 0
 
     def done(self):
         for i in range(len(self.iLaunchers)):
@@ -33,17 +35,17 @@ class Population:
             self.updateLuncher(i)
            
 
-    def show(self):
-        self.iLaunchers[self.showILauncher].show()
-        
-        if self.time < millis() :
-            self.time += 7000
+    def display(self):
+        self.iLaunchers[self.showILauncher].display()
+
+        if self.time != second():
+            self.time = second()
         else:
             return
         
         bestILauncherScore = 0
         for i in range(len(self.iLaunchers)):
-            if self.iLaunchers[i].score > bestILauncherScore :
+            if self.iLaunchers[i].score > bestILauncherScore and self.iLaunchers[i].dead == False:
                 bestILauncherScore = self.iLaunchers[i].score
                 self.showILauncher = i
             
@@ -65,33 +67,52 @@ class Population:
             self.bestILauncher = self.bestILauncher.clone()
         
     def selectParant(self):
-        rand = random_uniform(self.fitnessSum)
-        summation = 0
+        parants_fitness = [-1,-1]
+        parants_index = [0,0]
         for i in range(len(self.iLaunchers)):
-            summation += self.iLaunchers[i].fitness
-            if summation > rand : 
-                return self.iLaunchers[i]
+            if self.iLaunchers[i].fitness > parants_fitness[0] :
+                parants_fitness[1] = parants_fitness[0]
+                parants_index[1] = parants_index[0]
+                parants_fitness[0] = self.iLaunchers[i].fitness
+                parants_index[0] = i
+            elif self.iLaunchers[i].fitness > parants_fitness[1] : 
+                parants_fitness[1] = self.iLaunchers[i].fitness
+                parants_index[1] = i
         
-        return self.iLaunchers[0]
+        self.bestILauncherIndex = parants_index[0]
+        self.bestILauncherScore = self.iLaunchers[parants_index[0]].score
+        self.bestFitness = parants_fitness[0]
+        print("selectParant: parants_index: "+str(parants_index)+", parants_fitness: "+str(parants_fitness))
+        
+        return parants_index[0],parants_index[1]
+
         
     def naturalSelection(self):
-        newILaunchers = [ILauncher() for i in range(self.size)]
-        self.setBestILauncher()
-        self.calcFitnessSum()
+        #newILaunchers = [ILauncher() for i in range(self.size)]
+        newILaunchers = []
+        #self.setBestILauncher()
+        #self.calcFitnessSum()
         
-        newILaunchers[0] = self.bestILauncher.clone()
+        #newILaunchers[0] = self.bestILauncher.clone()
+        #newILaunchers.append(self.bestILauncher.clone())
         
-        for i in range(1,len(self.iLaunchers)):
-            child = self.selectParant().crossover(self.selectParant())
-            child.mutate()
-            newILaunchers[i] = child
-        
+        p_idx = self.selectParant()
+        child = self.iLaunchers[p_idx[0]].crossover(self.iLaunchers[p_idx[1]])
+        newILaunchers.append(child)
+
+        for _ in range(1,len(self.iLaunchers)):
+            brother = child.clone()
+            scale = random.uniform(0,0.15)
+            brother.mutate(scale)
+            newILaunchers.append(brother)
+                
         self.iLaunchers = newILaunchers
         self.gen += 1
+        print("Generation: "+str(self.gen))
                         
     def mutate(self):
         for i in range(len(self.iLaunchers)):
-            self.iLaunchers[i].mutate()
+            self.iLaunchers[i].mutate(i*0.0075)
             
     def calcFitness(self):
         for i in range(len(self.iLaunchers)):

@@ -10,7 +10,7 @@ class NeuralNet:
         self.weights = []
         self.weights.append(Matrix(self.hNodes,self.iNodes+1))
         
-        for i in range(1,self.hLayers):
+        for _ in range(1,self.hLayers):
             self.weights.append(Matrix(self.hNodes,self.hNodes+1))
         
         self.weights.append(Matrix(self.oNodes,self.hNodes+1))

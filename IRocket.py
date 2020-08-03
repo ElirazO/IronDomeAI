@@ -26,7 +26,7 @@ class IRocket:
             self.pos.x += self.vel*sin(self.angle)        
             self.pos.y -= self.vel*cos(self.angle)
 
-    def show(self):
+    def display(self):
         with push_matrix():
             translate(self.pos.x, self.pos.y)
             rotate(self.angle)

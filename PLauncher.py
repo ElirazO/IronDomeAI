@@ -36,12 +36,12 @@ class PLauncher:
             self.pRockets[i].move()
 
             
-    def show(self):
+    def display(self):
         if self.miss :
             return
 
         for i in range(self.PRocketNum) :
-            self.pRockets[i].show()
+            self.pRockets[i].display()
     
     def get_PRocketNum(self):
         return self.PRocketNum

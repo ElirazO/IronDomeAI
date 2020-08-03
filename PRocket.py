@@ -29,7 +29,7 @@ class PRocket:
             self.Yvel += PRocket.Gravity
             self.angle = atan(-self.Xvel/self.Yvel)
         
-    def show(self):
+    def display(self):
         if self.miss or self.hit :
             pass
         else: 
