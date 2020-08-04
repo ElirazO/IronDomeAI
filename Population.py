@@ -17,7 +17,10 @@ class Population:
         self.showILauncher = 0
         self.time = 0
 
-    def done(self):
+    def done(self,force_stop):
+        if force_stop:
+            return True
+
         for i in range(len(self.iLaunchers)):
             if not(self.iLaunchers[i].dead) :
                 return False
@@ -83,26 +86,21 @@ class Population:
         self.bestILauncherScore = self.iLaunchers[parants_index[0]].score
         self.bestFitness = parants_fitness[0]
         print("selectParant: parants_index: "+str(parants_index)+", parants_fitness: "+str(parants_fitness))
+        self.weights_logger(parants_index[0])
         
         return parants_index[0],parants_index[1]
 
         
     def naturalSelection(self):
-        #newILaunchers = [ILauncher() for i in range(self.size)]
         newILaunchers = []
-        #self.setBestILauncher()
-        #self.calcFitnessSum()
-        
-        #newILaunchers[0] = self.bestILauncher.clone()
-        #newILaunchers.append(self.bestILauncher.clone())
-        
+      
         p_idx = self.selectParant()
         child = self.iLaunchers[p_idx[0]].crossover(self.iLaunchers[p_idx[1]])
         newILaunchers.append(child)
 
         for _ in range(1,len(self.iLaunchers)):
             brother = child.clone()
-            scale = random.uniform(0,0.15)
+            scale = random.uniform(0,0.075)
             brother.mutate(scale)
             newILaunchers.append(brother)
                 
@@ -122,3 +120,12 @@ class Population:
         self.fitnessSum = 0.
         for i in range(len(self.iLaunchers)):
             self.fitnessSum += self.iLaunchers[i].fitness
+
+
+    def weights_logger(self,bestILuncherIdx):
+        with open("weightd.log",'a') as fh:
+            fh.write(str(self.iLaunchers[bestILuncherIdx].score))
+            fh.write("\n")
+            fh.write(str(self.iLaunchers[bestILuncherIdx].brain_tf.get_weights()))
+            fh.write("\n")
+

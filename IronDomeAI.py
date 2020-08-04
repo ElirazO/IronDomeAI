@@ -14,6 +14,8 @@ img2 = None
 img3 = None
 pop = None
 Launcher = None
+force_stop = False
+
 #f = None
 
 def setup():
@@ -34,18 +36,21 @@ def setup():
     #f = create_font("Arial.tiff", 16)
 
     if not(humanPlaying):
-        pop = Population(50)
+        pop = Population(15)
     else:
         Launcher = ILauncher()
     
 def draw():
-    global humanPlaying, drawOnly, img0 #, img1
+    global humanPlaying, drawOnly, img0 ,force_stop #, img1
     background(img0)
     
     if not(humanPlaying) :     
-        if pop.done() :
+        if pop.done(force_stop) :
             pop.calcFitness()
             pop.naturalSelection()
+            
+            if force_stop :
+                exit()
         else:
             pop.update()
             pop.display()
@@ -58,7 +63,10 @@ def draw():
         text("GEN : "+str(pop.gen),(width-200,125))
         text("SHOW LAUNCHER : "+str(pop.showILauncher),(50,65))
         text("SCORE : "+str(pop.iLaunchers[pop.showILauncher].score),(50,85))
-    
+        
+        if keyArray[0] :
+            force_stop = True
+                 
     else:
         #text_font(f, 36)
 

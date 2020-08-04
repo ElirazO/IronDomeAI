@@ -125,17 +125,16 @@ class ILauncher:
             
     def clone(self):
         clone = ILauncher()
-        #clone.brain = self.brain.clone()
         inputList = [0.]*2*self.pLauncher.PRocketNum
         clone.brain_tf(tf.convert_to_tensor([inputList]))
-        clone.brain_tf.set_weights(self.brain_tf.get_weights()) 
+        clone.brain_tf.set_weights(self.brain_tf.get_weights())
+        #clone.brain_tf.set_weights(self.preTrain_weights())
         return clone
     
     def crossover(self,partner):
         child = ILauncher()
         inputList = [0.]*2*self.pLauncher.PRocketNum
         child.brain_tf(tf.convert_to_tensor([inputList]))
-        #child.brain_tf.set_weights(self.brain_tf.get_weights())
         
         self_weights = self.brain_tf.get_weights()
         partner_weights = partner.brain_tf.get_weights()
@@ -187,6 +186,35 @@ class ILauncher:
         #     self.fitness = 1
         #     self.fitness *= (1+self.score)
         #     self.fitness *= pow(2,self.score)
+
+    def preTrain_weights(self):
+        preTrain_old = [np.array([[ 0.7747052 , -0.06323507],[ 0.650144  , -0.4070573 ]], dtype=float), 
+                 np.array([-0.00159831,  0.02615436], dtype=float), 
+                 np.array([[-0.08703193,  0.4317813 , -0.26286018, -0.19466951, -0.13379496, 0.15367594],
+                     [-0.02992624, -0.19129099,  0.6304834 , -0.8421867 ,  0.24539606, -0.5280434 ]], dtype=float), 
+                 np.array([ 0.01992389, -0.06196998, -0.11939131, -0.00367607,  0.00435869, -0.0057879 ], dtype=float), 
+                 np.array([[ 0.42867652,  0.3649504 ,  0.3358565 ],
+                     [-0.40823904, -0.37652016, -0.51416016],
+                     [ 0.9031374 , -0.6544139 , -0.7731864 ],
+                     [ 0.51811844,  0.32121518, -0.40145496],
+                     [-0.13394707, -0.04317584, -0.35383993],
+                     [ 0.41144678, -0.7426472 , -0.27136636]], dtype=float), 
+                 np.array([-0.00285651, -0.07616875,  0.00990287], dtype=float)]
+        
+        preTrain = [np.array([[ 0.7732944 , -0.05998065],[ 0.7283419 , -0.38255513]], dtype=float), 
+                    np.array([-0.04344827,  0.0136483 ], dtype=float), 
+                    np.array([[-0.07711454,  0.50689536, -0.18772525, -0.14911102, -0.09128406, 0.14447917],
+                            [-0.03839664, -0.17755915,  0.6494552 , -0.9088742 ,  0.18324763, -0.52563614]], dtype=float), 
+                    np.array([-0.00230634, -0.06889542, -0.07750924, -0.06946152,  0.00666572, 0.02743732], dtype=float), 
+                    np.array([[ 0.43108776,  0.3122723 ,  0.3690732 ],
+                            [-0.37592992, -0.36520183, -0.4319192 ],
+                            [ 0.97778624, -0.6643945 , -0.8000411 ],
+                            [ 0.53290147,  0.32760376, -0.44241896],
+                            [-0.15208031, -0.04004817, -0.29146948],
+                            [ 0.4044475 , -0.7463187 , -0.2511852 ]], dtype=float), 
+                    np.array([-0.05362742, -0.09179185, -0.01467659], dtype=float)]
+        
+        return preTrain
         
         
         
